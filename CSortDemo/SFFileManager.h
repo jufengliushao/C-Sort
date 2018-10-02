@@ -22,4 +22,9 @@
  */
 int file_createFile(char *path);
 
+/**
+ * 进行数据的读写
+ */
+void file_writeSource(void);
+
 #endif /* SFFileManager_h */
