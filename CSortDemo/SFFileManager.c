@@ -10,6 +10,7 @@
 
 // --------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------
+FILE *fp_readConst;
 /**
  * 创建文件
  */
@@ -55,6 +56,38 @@ void file_writeSource() {
     file_private_writeSourceData();
 }
 
+/**
+ * 读取数据
+ */
+void file_readData(char **lineBlock){
+    if (fp_readConst == NULL) {
+        char *path = (char *)malloc(sizeof(200));
+        strcpy(path, FILE_PRIFX);
+        strcat(path, FILE_SOURCE_NAME);
+       fp_readConst = fopen(path, "r");
+    }
+    // 打开文件成功
+    long count = RAM_MEMORY * SIZE_GMKB / BLOCK_MEMORY * 40;
+    long i = 0;
+    while (i < count) {
+        char *buffer = (char *)malloc(LINE_LENGTH);
+        fgets(buffer, LINE_LENGTH, fp_readConst);
+        if(strlen(buffer) < 10){
+            free(buffer);
+            continue;
+        }
+        strcpy(lineBlock[i], buffer);
+        i ++;
+        free(buffer);
+    }
+}
+
+/**
+ * 关闭只读指针
+ */
+void file_closeReadOnly() {
+    fclose(fp_readConst);
+}
 // --------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------
 /**

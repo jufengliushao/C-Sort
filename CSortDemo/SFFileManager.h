@@ -27,4 +27,14 @@ int file_createFile(char *path);
  */
 void file_writeSource(void);
 
+/**
+ * 关闭只读指针
+ */
+void file_closeReadOnly(void);
+
+/**
+ * 读取数据
+ */
+void file_readData(char **lineBlock);
+
 #endif /* SFFileManager_h */

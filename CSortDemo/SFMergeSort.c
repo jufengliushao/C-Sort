@@ -40,11 +40,8 @@ void mergeArray(char **a, int first, int mid, int last) {
     j = mid+1;
     n = last;
     int k = 0;
-    long size = sizeof(a);
-    char **temp = (char **)malloc(size);
-    for (int y = 0; y< size; y ++) {
-        temp[y] = (char *)malloc(LINE_LENGTH);
-    }
+    long size = RAM_MEMORY * SIZE_GMKB / BLOCK_MEMORY * 40;
+    char **temp = (char **)malloc(size * sizeof(long));
     
     while(i<=m && j<=n) {
         if(strcmp(a[i], a[j]) < 0) {
