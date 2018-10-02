@@ -16,5 +16,7 @@
 #define SOURCE_DATA_MEMORY 1 // gb 源文件大小
 #define FILE_PRIFX "/Users/shaofengliu/Documents/github/C-Sort/CSortDemo/" // 文件前缀
 #define FILE_SOURCE_NAME "source.txt" // 源文件名字
+#define FILE_SORT_ONE_NAME "sort1.txt" // 排序文件1
+#define FILE_SORT_TWO_NAME "sort2.txt" // 排序文件1
 
 #endif /* PublicDefineHeader_h */
