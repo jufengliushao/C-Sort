@@ -10,7 +10,7 @@
 
 // --------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------
-struct FilePoint points[20]; // 点
+
 FILE *fp_readConst;
 /**
  * 创建文件
@@ -40,6 +40,11 @@ long file_private_randNum(void);
  * 对排序好的数据进行写入文件
  */
 void file_private_writeData(struct FilePoint point, char **buffer);
+
+/**
+ * 读数据 - 按扇区
+ */
+void file_private_secondSectionReadData(char **buffer, struct FilePoint *point);
 
 // --------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------
@@ -99,9 +104,15 @@ void file_closeReadOnly() {
  * 排序好的数据进行r写入文件
  */
 void file_writeSortedData(struct FilePoint *point, char **buffer) {
-    int index = sizeof(points) / sizeof(struct FilePoint);
-    points[index - 1] = *point;
     file_private_writeData(*point, buffer);
+}
+
+/**
+ * 按照数据结构，第二阶段读取数据
+ */
+void file_readSectionData(char **buffer, struct FilePoint *point) {
+    (*point).flag = 1; // 标记为正在读取数据
+    file_private_secondSectionReadData(buffer, point);
 }
 // --------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------
@@ -187,11 +198,36 @@ void file_private_writeData(struct FilePoint point, char **buffer){
     long count = point.maxRecords;
     long i = 0;
     while (i < count) {
-//        char *buff = (char *)malloc(sizeof(LINE_LENGTH));
-//        strcpy(buff, buffer[i]);
-//        strcat(buff, "\n");
         fwrite(strcat(buffer[i], "\n"), LINE_LENGTH, 1, fp);
         i ++;
     }
+    fclose(fp);
+}
+
+/**
+ * 读数据 - 按扇区
+ */
+void file_private_secondSectionReadData(char **buffer, struct FilePoint *point) {
+    FILE *fp;
+    if((fp = fopen((*point).filePath, "r")) == NULL){
+        return; // 打开失败
+    }
+    fseek(fp, (*point).offset * LINE_LENGTH, SEEK_SET);
+    long i = 0, count = CACHE_SECTION;
+    while (i < count) {
+        char *buffers = (char *)malloc(LINE_LENGTH);
+        fgets(buffers, LINE_LENGTH, fp);
+        if(strlen(buffers) < 10){
+            free(buffers);
+            continue;
+        }
+        strcpy(buffer[i], buffers);
+        i ++;
+        (*point).maxRecords --;
+        if ((*point).maxRecords <= 0) {
+            break;
+        }
+    }
+    (*point).offset += --i;
     fclose(fp);
 }

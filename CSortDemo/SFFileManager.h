@@ -38,7 +38,12 @@ void file_closeReadOnly(void);
 void file_readData(char **lineBlock);
 
 /**
- * 排序好的数据进行r写入文件
+ * 排序好的数据进行写入文件
  */
 void file_writeSortedData(struct FilePoint *point, char **buffer);
+
+/**
+ * 按照数据结构，第二阶段读取数据
+ */
+void file_readSectionData(char **buffer, struct FilePoint *point);
 #endif /* SFFileManager_h */

@@ -12,6 +12,8 @@
 
 // --------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------
+struct FilePoint points[20]; // 点
+int pointsCount = 0; // 当前一个数据结构index
 /**
  * 数据初始化
  */
@@ -22,6 +24,10 @@ void initingData(void);
  */
 void firstSortData(int index);
 
+/**
+ * 第二阶段排序
+ */
+void secondSortData(void);
 // --------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------
 
@@ -35,6 +41,7 @@ int main(int argc, const char * argv[]) {
       firstSortData(i);
     }
     file_closeReadOnly();
+    secondSortData();
     return 0;
 }
 
@@ -67,10 +74,40 @@ void firstSortData(int index) {
     struct FilePoint point;
     point.filePath = (char *)malloc(sizeof(char) * 200);
     strcpy(point.filePath, path);
-    point.flag = 0;
+    point.flag = 3;
     point.offset = sizes * index;
     point.maxRecords = sizes;
+    int indexs = sizeof(points) / sizeof(struct FilePoint);
+    points[pointsCount++] = point;
     file_writeSortedData(&point, re);
     free(re);
     free(path);
+}
+
+/**
+ * 第二阶段排序
+ */
+void secondSortData() {
+    // 获取两个points
+    struct FilePoint tmpPoint[2];
+    int count = sizeof(points) / sizeof(points[0]), j = 0;
+    for (int i = 0; i < count; i ++) {
+        if(points[i].flag == 3){
+            tmpPoint[j++] = points[i];
+        }
+        if (j >= 2) {
+            break;
+        }
+    }
+    
+    char **buffer1 = (char **)malloc(CACHE_SECTION * sizeof(long));
+    char **buffer2 = (char **)malloc(CACHE_SECTION * sizeof(long));
+    for (long i = 0; i < CACHE_SECTION; i ++) {
+        buffer1[i] = (char *)malloc(sizeof(char) * LINE_LENGTH);
+        buffer2[i] = (char *)malloc(sizeof(char) * LINE_LENGTH);
+    }
+    file_readSectionData(buffer1, &tmpPoint[0]);
+    file_readSectionData(buffer2, &tmpPoint[1]);
+    free(buffer1);
+    free(buffer2);
 }
