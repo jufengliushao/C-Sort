@@ -10,6 +10,7 @@
 
 // --------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------
+struct FilePoint points[20]; // 点
 FILE *fp_readConst;
 /**
  * 创建文件
@@ -34,6 +35,11 @@ int file_private_writeSourceData(void);
  * 获取随机数
  */
 long file_private_randNum(void);
+
+/**
+ * 对排序好的数据进行写入文件
+ */
+void file_private_writeData(struct FilePoint point, char **buffer);
 
 // --------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------
@@ -87,6 +93,15 @@ void file_readData(char **lineBlock){
  */
 void file_closeReadOnly() {
     fclose(fp_readConst);
+}
+
+/**
+ * 排序好的数据进行r写入文件
+ */
+void file_writeSortedData(struct FilePoint *point, char **buffer) {
+    int index = sizeof(points) / sizeof(struct FilePoint);
+    points[index - 1] = *point;
+    file_private_writeData(*point, buffer);
 }
 // --------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------
@@ -158,4 +173,25 @@ long file_private_randNum() {
         rand *= 10;
     }
     return rand;
+}
+
+/**
+ * 对排序好的数据进行写入文件
+ */
+void file_private_writeData(struct FilePoint point, char **buffer){
+    FILE *fp;
+    if ((fp = fopen(point.filePath, "a+")) == NULL) {
+        // 打开文件失败
+        return;
+    }
+    long count = point.maxRecords;
+    long i = 0;
+    while (i < count) {
+//        char *buff = (char *)malloc(sizeof(LINE_LENGTH));
+//        strcpy(buff, buffer[i]);
+//        strcat(buff, "\n");
+        fwrite(strcat(buffer[i], "\n"), LINE_LENGTH, 1, fp);
+        i ++;
+    }
+    fclose(fp);
 }

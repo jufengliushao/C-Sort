@@ -21,4 +21,11 @@
 
 #define SUFFIX_DATA "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890\n"
 
+struct FilePoint {
+    long offset; // 当前点的偏移量
+    char *filePath; // 当前点所指向的文件
+    int flag; // 是否正在取数据
+    long maxRecords; // 最大数据量
+};
+
 #endif /* PublicDefineHeader_h */

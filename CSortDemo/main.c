@@ -12,7 +12,6 @@
 
 // --------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------
-
 /**
  * 数据初始化
  */
@@ -28,13 +27,14 @@ void firstSortData(int index);
 
 
 int main(int argc, const char * argv[]) {
-//    initingData();
+    initingData();
     int i = 0;
     int firstCount = (int)malloc(sizeof(int));
     firstCount = SOURCE_DATA_MEMORY * SIZE_GMKB / RAM_MEMORY;
-    for (i = 0; i < 1; i ++) {
+    for (i = 0; i < firstCount; i ++) {
       firstSortData(i);
     }
+    file_closeReadOnly();
     return 0;
 }
 
@@ -54,6 +54,9 @@ void initingData() {
  * 第一阶段数据排序
  */
 void firstSortData(int index) {
+    char *path = (char *)malloc(200);
+    strcpy(path, FILE_PRIFX);
+    strcat(path, FILE_SORT_ONE_NAME);
     long sizes = RAM_MEMORY * SIZE_GMKB / BLOCK_MEMORY * 40;
     char **re = (char **)malloc(sizes * sizeof(long));
     for (long i = 0; i < sizes; i ++) {
@@ -61,8 +64,13 @@ void firstSortData(int index) {
     }
     file_readData(re);
     merge_sort(re, 0, sizes - 1);
-    for (int i = 0; i < sizes; i ++) {
-        printf("%s\n", re[i]);
-    }
+    struct FilePoint point;
+    point.filePath = (char *)malloc(sizeof(char) * 200);
+    strcpy(point.filePath, path);
+    point.flag = 0;
+    point.offset = sizes * index;
+    point.maxRecords = sizes;
+    file_writeSortedData(&point, re);
     free(re);
+    free(path);
 }
