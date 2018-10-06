@@ -72,10 +72,10 @@ void file_writeSource() {
  */
 void file_readData(char **lineBlock){
     if (fp_readConst == NULL) {
-        char *path = (char *)malloc(sizeof(200));
-        strcpy(path, FILE_PRIFX);
-        strcat(path, FILE_SOURCE_NAME);
-       fp_readConst = fopen(path, "r");
+        char *paths = (char *)malloc(200* sizeof(char));
+        strcpy(paths, FILE_PRIFX);
+        strcat(paths, FILE_SOURCE_NAME);
+       fp_readConst = fopen(paths, "r");
     }
     // 打开文件成功
     long count = RAM_MEMORY * SIZE_GMKB / BLOCK_MEMORY * 40;

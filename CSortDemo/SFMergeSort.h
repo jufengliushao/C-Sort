@@ -14,4 +14,7 @@
 //归并排序
 void merge_sort(char **a, int start, int end);
 
+// 第二阶段排序
+int merge_secondSort(char **buffer1, char **buffer2, char **sort);
+
 #endif /* SFMergeSort_h */

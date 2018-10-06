@@ -33,11 +33,11 @@ void secondSortData(void);
 
 
 int main(int argc, const char * argv[]) {
-    initingData();
+//    initingData();
     int i = 0;
     int firstCount = (int)malloc(sizeof(int));
     firstCount = SOURCE_DATA_MEMORY * SIZE_GMKB / RAM_MEMORY;
-    for (i = 0; i < firstCount; i ++) {
+    for (i = 0; i < 1; i ++) {
       firstSortData(i);
     }
     file_closeReadOnly();
@@ -67,7 +67,7 @@ void firstSortData(int index) {
     long sizes = RAM_MEMORY * SIZE_GMKB / BLOCK_MEMORY * 40;
     char **re = (char **)malloc(sizes * sizeof(long));
     for (long i = 0; i < sizes; i ++) {
-        re[i] = (char *)malloc(sizeof(char) * LINE_LENGTH);
+        re[i] = (char *)malloc(sizeof(char) * LINE_LENGTH + 1);
     }
     file_readData(re);
     merge_sort(re, 0, sizes - 1);
@@ -102,12 +102,15 @@ void secondSortData() {
     
     char **buffer1 = (char **)malloc(CACHE_SECTION * sizeof(long));
     char **buffer2 = (char **)malloc(CACHE_SECTION * sizeof(long));
+    char **sort = (char **)malloc(CACHE_SECTION * sizeof(long));
     for (long i = 0; i < CACHE_SECTION; i ++) {
         buffer1[i] = (char *)malloc(sizeof(char) * LINE_LENGTH);
         buffer2[i] = (char *)malloc(sizeof(char) * LINE_LENGTH);
     }
     file_readSectionData(buffer1, &tmpPoint[0]);
     file_readSectionData(buffer2, &tmpPoint[1]);
+    int flag = merge_secondSort(buffer1, buffer2, sort);
     free(buffer1);
     free(buffer2);
+    free(sort);
 }
